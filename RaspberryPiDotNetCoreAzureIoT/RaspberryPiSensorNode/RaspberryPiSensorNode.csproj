@@ -8,12 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Iot.Device.Bindings" Version="0.1.0-prerelease.19171.3" />
+    <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.29.0-preview-002" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0-preview3.19153.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview3.19153.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview3.19153.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0-preview3.19153.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview3.19153.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0-preview3.19153.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="System.Device.Gpio" Version="0.1.0-prerelease.19171.3" />
   </ItemGroup>
 
