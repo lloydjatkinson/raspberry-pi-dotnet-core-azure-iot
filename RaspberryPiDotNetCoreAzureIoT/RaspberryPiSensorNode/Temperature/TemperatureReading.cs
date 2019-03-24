@@ -1,4 +1,4 @@
-﻿namespace RaspberryPiSensorDevice
+﻿namespace RaspberryPiSensorNode.Temperature
 {
     public class TemperatureReading
     {

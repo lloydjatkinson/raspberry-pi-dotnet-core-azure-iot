@@ -1,25 +1,29 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using RaspberryPiSensorDevice.Configuration;
+using RaspberryPiSensorNode.Configuration;
+using RaspberryPiSensorNode.Temperature;
 
-namespace RaspberryPiSensorDevice
+namespace RaspberryPiSensorNode
 {
-    public class App
+    internal class App
     {
         private readonly ILogger<App> _logger;
+        private readonly ICpuTemperatureMonitor _cpuTemperatureMonitor;
         private readonly AzureIoTHubConfiguration _azureIoTHubConfiguration;
 
-        public App(ILogger<App> logger, IOptions<AzureIoTHubConfiguration> azureIoTHubConfiguration)
+        public App(ILogger<App> logger, IOptions<AzureIoTHubConfiguration> azureIoTHubConfiguration, ICpuTemperatureMonitor cpuTemperatureMonitor)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _azureIoTHubConfiguration = azureIoTHubConfiguration.Value ?? throw new ArgumentNullException(nameof(azureIoTHubConfiguration));
+            _cpuTemperatureMonitor = cpuTemperatureMonitor;
         }
 
-        public async Task Run()
+        public async Task Run(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Raspberry Pi Sensor Node started.");
             if (!string.IsNullOrWhiteSpace(_azureIoTHubConfiguration.ConnectionString))
@@ -30,6 +34,8 @@ namespace RaspberryPiSensorDevice
             {
                 _logger.LogWarning("Azure IoT Hub connection string is not in the application configuration.");
             }
+
+            await _cpuTemperatureMonitor.Run(cancellationToken);
         }
     }
 }

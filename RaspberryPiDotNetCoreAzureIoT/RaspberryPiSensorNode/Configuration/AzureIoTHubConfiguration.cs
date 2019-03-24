@@ -1,4 +1,4 @@
-﻿namespace RaspberryPiSensorDevice.Configuration
+﻿namespace RaspberryPiSensorNode.Configuration
 {
     public class AzureIoTHubConfiguration
     {

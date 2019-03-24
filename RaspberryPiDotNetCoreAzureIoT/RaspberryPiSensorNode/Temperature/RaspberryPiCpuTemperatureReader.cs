@@ -1,8 +1,8 @@
 ﻿using Iot.Device.CpuTemperature;
 
-namespace RaspberryPiSensorDevice
+namespace RaspberryPiSensorNode.Temperature
 {
-    public class RaspberryPiCpuTemperatureReader : ICpuTemperatureReader
+    public class RaspberryPiCpuTemperatureReader : ITemperatureReader
     {
         private readonly CpuTemperature _cpuTemperature;
 

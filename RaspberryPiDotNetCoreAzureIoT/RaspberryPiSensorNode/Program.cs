@@ -1,20 +1,27 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using RaspberryPiSensorDevice.Configuration;
 
-namespace RaspberryPiSensorDevice
+using RaspberryPiSensorNode.Configuration;
+using RaspberryPiSensorNode.Temperature;
+
+namespace RaspberryPiSensorNode
 {
-    public class Program
+    internal class Program
     {
+        private readonly static CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
         public static async Task Main(string[] args)
         {
             var serviceProvider = BuildCompositionRoot(new ServiceCollection());
 
             // Entry Point
-            await serviceProvider.GetService<App>().Run();
+            Console.CancelKeyPress += HandleExit;
+            await serviceProvider.GetService<App>().Run(_cancellationTokenSource.Token);
 
             // This isn't needed per se however console logging is done on a queue in another thread for performance.
             // That queue might not be flushed by the time the console application exits.
@@ -25,8 +32,6 @@ namespace RaspberryPiSensorDevice
         {
             // Configuration
             var configuration = new ConfigurationBuilder()
-                //.SetBasePath(AppContext.BaseDirectory)
-                //.SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
@@ -34,11 +39,18 @@ namespace RaspberryPiSensorDevice
                 .AddOptions()
                 .AddLogging(loggingBuilder => loggingBuilder.AddConsole())
                 .Configure<AzureIoTHubConfiguration>(configuration.GetSection("AzureIoTHub"))
-                .AddTransient<ICpuTemperatureReader, RaspberryPiCpuTemperatureReader>()
+                .AddTransient<ITemperatureReader, RaspberryPiCpuTemperatureReader>()
+                .AddTransient<ICpuTemperatureMonitor, CpuTemperatureMonitor>()
                 .AddTransient<App>()
                 .BuildServiceProvider();
 
             return serviceProvider;
+        }
+
+        private static void HandleExit(object sender, ConsoleCancelEventArgs eventArguments)
+        {
+            eventArguments.Cancel = true;
+            _cancellationTokenSource.Cancel();
         }
     }
 }
