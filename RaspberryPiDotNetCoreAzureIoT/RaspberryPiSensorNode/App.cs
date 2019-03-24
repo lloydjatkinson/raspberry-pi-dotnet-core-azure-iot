@@ -21,7 +21,15 @@ namespace RaspberryPiSensorDevice
 
         public async Task Run()
         {
-            var test = _azureIoTHubConfiguration.ConnectionString;
+            _logger.LogInformation("Raspberry Pi Sensor Node started.");
+            if (!string.IsNullOrWhiteSpace(_azureIoTHubConfiguration.ConnectionString))
+            {
+                _logger.LogInformation("Azure IoT Hub connection read from application configuration.");
+            }
+            else
+            {
+                _logger.LogWarning("Azure IoT Hub connection string is not in the application configuration.");
+            }
         }
     }
 }
