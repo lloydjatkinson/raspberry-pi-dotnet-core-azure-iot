@@ -56,7 +56,7 @@ namespace RaspberryPiSensorNode.Temperature
                     _logger.LogError(exception, "Unable to send CPU temperature to Azure IoT Hub.");
                 }
 
-                await Task.Delay(5000); //TOOD: Use a Timer instead.
+                await Task.Delay(TimeSpan.FromSeconds(10)); //TOOD: Use a Timer instead.
             }
         }
     }
