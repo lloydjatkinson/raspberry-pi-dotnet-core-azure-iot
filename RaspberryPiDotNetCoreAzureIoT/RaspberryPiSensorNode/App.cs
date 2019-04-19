@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+
+using RaspberryPiSensorNode.Configuration.Util;
+using RaspberryPiSensorNode.Temperature;
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-using RaspberryPiSensorNode.Configuration;
-using RaspberryPiSensorNode.Temperature;
 
 namespace RaspberryPiSensorNode
 {
@@ -14,26 +13,20 @@ namespace RaspberryPiSensorNode
     {
         private readonly ILogger<App> _logger;
         private readonly ICpuTemperatureMonitor _cpuTemperatureMonitor;
-        private readonly AzureIoTHubConfiguration _azureIoTHubConfiguration;
+        private readonly IConfigurationLogger _configurationLogger;
 
-        public App(ILogger<App> logger, IOptions<AzureIoTHubConfiguration> azureIoTHubConfiguration, ICpuTemperatureMonitor cpuTemperatureMonitor)
+        public App(ILogger<App> logger, ICpuTemperatureMonitor cpuTemperatureMonitor, IConfigurationLogger configurationLogger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _azureIoTHubConfiguration = azureIoTHubConfiguration.Value ?? throw new ArgumentNullException(nameof(azureIoTHubConfiguration));
             _cpuTemperatureMonitor = cpuTemperatureMonitor;
+            _configurationLogger = configurationLogger;
         }
 
         public async Task Run(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Raspberry Pi Sensor Node started.");
-            if (!string.IsNullOrWhiteSpace(_azureIoTHubConfiguration.ConnectionString))
-            {
-                _logger.LogInformation("Azure IoT Hub connection read from application configuration.");
-            }
-            else
-            {
-                _logger.LogWarning("Azure IoT Hub connection string is not in the application configuration.");
-            }
+            //_logger.LogInformation($"Running on .NET Core {Environment.Version}"); // Commented out for now - .NET Core 3 finally fixes this, returns 4.xx on .NET Core 2.2.
+            _configurationLogger.LogConfiguration();
 
             await _cpuTemperatureMonitor.Run(cancellationToken);
         }

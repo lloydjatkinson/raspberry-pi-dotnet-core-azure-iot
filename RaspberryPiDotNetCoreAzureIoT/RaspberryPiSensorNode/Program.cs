@@ -1,13 +1,14 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using RaspberryPiSensorNode.Configuration;
+using RaspberryPiSensorNode.Configuration.Util;
 using RaspberryPiSensorNode.Temperature;
+
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RaspberryPiSensorNode
 {
@@ -39,6 +40,8 @@ namespace RaspberryPiSensorNode
                 .AddOptions()
                 .AddLogging(loggingBuilder => loggingBuilder.AddConsole())
                 .Configure<AzureIoTHubConfiguration>(configuration.GetSection("AzureIoTHub"))
+                .Configure<CpuTemperatureMonitorConfiguration>(configuration.GetSection("CpuTemperatureMonitor"))
+                .AddTransient<IConfigurationLogger, ConfigurationLogger>()
                 .AddTransient<ITemperatureReader, RaspberryPiCpuTemperatureReader>()
                 .AddTransient<ICpuTemperatureMonitor, CpuTemperatureMonitor>()
                 .AddTransient<App>()
