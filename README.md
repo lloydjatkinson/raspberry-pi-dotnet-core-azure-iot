@@ -7,7 +7,7 @@ This is a quick and simple demonstration of using a Raspberry Pi, C#/.NET Core, 
 
 Although this is a simple console application (will be refactored to be a new .NET Core 3 Worker Service) it demonstrates a number of best practices and maintainable code.
 
-For example it's using dependency injection, the new IOptions configuration pattern, and logging.
+For example it's using dependency injection, logging, and the new IOptions configuration pattern to configure API keys and also the frequency of temperature readings.
 
 ```csharp
 private static ServiceProvider BuildCompositionRoot(IServiceCollection servicesCollection)
